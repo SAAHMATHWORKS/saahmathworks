@@ -156,9 +156,9 @@ export default function ExpertisePage() {
         {/* Services */}
         <div className="space-y-8">
           {SERVICES.map((svc, i) => (
-            <AnimatedSection key={svc.id} delay={0.05} id={svc.id}>
+            <AnimatedSection key={svc.id} delay={0.05}>
               <div
-                className={`relative rounded-2xl border overflow-hidden transition-all duration-500 ${svc.glowClass}`}
+                id={svc.id} className={`relative rounded-2xl border overflow-hidden transition-all duration-500 ${svc.glowClass}`}
                 style={{ borderColor: svc.borderColor }}
               >
                 {/* Gradient overlay */}
