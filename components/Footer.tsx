@@ -1,9 +1,26 @@
 import Link from "next/link";
-import { MapPin, Mail, Phone, Github, Linkedin, Twitter, Zap, ArrowUpRight } from "lucide-react";
+import {
+  MapPin,
+  Mail,
+  Phone,
+  Github,
+  Linkedin,
+  Twitter,
+  Zap,
+  ArrowUpRight,
+} from "lucide-react";
 
 const TECH_BADGES = [
-  "LangGraph", "CrewAI", "Claude AI", "Python", "Next.js",
-  "FastAPI", "PyTorch", "FAISS", "Llama 3", "Grok",
+  "LangGraph",
+  "CrewAI",
+  "Claude AI",
+  "Python",
+  "Next.js",
+  "FastAPI",
+  "PyTorch",
+  "FAISS",
+  "Llama 3",
+  "Grok",
 ];
 
 const SERVICES_LINKS = [
@@ -32,11 +49,17 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 py-16">
           {/* Brand column */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5 mb-5 group w-fit">
+            <Link
+              href="/"
+              className="flex items-center gap-2.5 mb-5 group w-fit"
+            >
               <div className="relative flex items-center justify-center w-8 h-8">
                 <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-[#00F0FF] to-[#00FF9F] opacity-20" />
                 <div className="absolute inset-0 rounded-lg border border-[rgba(0,240,255,0.4)]" />
-                <Zap className="w-4 h-4 text-[#00F0FF] relative z-10" strokeWidth={2.5} />
+                <Zap
+                  className="w-4 h-4 text-[#00F0FF] relative z-10"
+                  strokeWidth={2.5}
+                />
               </div>
               <span className="font-display font-bold text-base tracking-tight">
                 <span className="text-white">SAAH</span>
@@ -44,15 +67,28 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-text-secondary text-sm leading-relaxed mb-6">
-              Consultancy d&apos;élite en AI Engineering et Data Science. 
-              Nous architecturons l&apos;intelligence autonome à l&apos;échelle entreprise.
+              Consultancy d&apos;élite en AI Engineering et Data Science. Nous
+              architecturons l&apos;intelligence autonome à l&apos;échelle
+              entreprise.
             </p>
             {/* Social links */}
             <div className="flex gap-3">
               {[
-                { Icon: Github, href: "https://github.com", label: "GitHub" },
-                { Icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-                { Icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+                {
+                  Icon: Github,
+                  href: "https://github.com/SAAHMATHWORKS",
+                  label: "GitHub",
+                },
+                {
+                  Icon: Linkedin,
+                  href: "https://linkedin.com/in/thibaut-saah",
+                  label: "LinkedIn",
+                },
+                {
+                  Icon: Twitter,
+                  href: "https://twitter.com",
+                  label: "Twitter",
+                },
               ].map(({ Icon, href, label }) => (
                 <a
                   key={label}
@@ -72,7 +108,9 @@ export default function Footer() {
 
           {/* Services */}
           <div>
-            <h3 className="text-sm font-semibold text-white mb-5 tracking-wide uppercase">Services</h3>
+            <h3 className="text-sm font-semibold text-white mb-5 tracking-wide uppercase">
+              Services
+            </h3>
             <ul className="space-y-3">
               {SERVICES_LINKS.map(({ href, label }) => (
                 <li key={label}>
@@ -90,7 +128,9 @@ export default function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="text-sm font-semibold text-white mb-5 tracking-wide uppercase">Navigation</h3>
+            <h3 className="text-sm font-semibold text-white mb-5 tracking-wide uppercase">
+              Navigation
+            </h3>
             <ul className="space-y-3">
               {COMPANY_LINKS.map(({ href, label }) => (
                 <li key={label}>
@@ -108,13 +148,18 @@ export default function Footer() {
 
           {/* Contact info */}
           <div>
-            <h3 className="text-sm font-semibold text-white mb-5 tracking-wide uppercase">Contact</h3>
+            <h3 className="text-sm font-semibold text-white mb-5 tracking-wide uppercase">
+              Contact
+            </h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-[#00F0FF] mt-0.5 shrink-0" />
                 <span className="text-sm text-text-secondary">
-                  Douala, Cameroun<br />
-                  <span className="text-text-muted text-xs">Afrique Centrale</span>
+                  Douala, Cameroun
+                  <br />
+                  <span className="text-text-muted text-xs">
+                    Afrique Centrale
+                  </span>
                 </span>
               </li>
               <li className="flex items-center gap-3">
@@ -132,7 +177,7 @@ export default function Footer() {
                   href="tel:+237600000000"
                   className="text-sm text-text-secondary hover:text-[#00F0FF] transition-colors"
                 >
-                  +237 6 96 69 75 51 00
+                  +237 6 96 69 75 51
                 </a>
               </li>
             </ul>
@@ -147,7 +192,9 @@ export default function Footer() {
 
         {/* Tech badges */}
         <div className="py-6 border-t border-[#1a1a1a]">
-          <p className="text-xs text-text-muted mb-3 font-mono uppercase tracking-widest">Stack Technologique</p>
+          <p className="text-xs text-text-muted mb-3 font-mono uppercase tracking-widest">
+            Stack Technologique
+          </p>
           <div className="flex flex-wrap gap-2">
             {TECH_BADGES.map((badge) => (
               <span

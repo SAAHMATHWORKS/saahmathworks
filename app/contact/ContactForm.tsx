@@ -142,7 +142,7 @@ export default function ContactForm() {
                   <div>
                     <p className="text-xs text-text-muted mb-0.5">Téléphone</p>
                     <p className="text-sm text-white group-hover:text-[#00FF9F] transition-colors">
-                      +237 6 96 69 75 51 00
+                      +237 6 96 69 75 51
                     </p>
                   </div>
                 </a>
