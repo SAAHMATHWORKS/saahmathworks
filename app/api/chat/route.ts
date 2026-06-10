@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import Anthropic from "@anthropic-ai/sdk";
 
-// Système prompt : contextualise Grok sur SAAH MATHWORKS
-const SYSTEM_PROMPT = `Tu es l'assistant virtuel de SAAH MATHWORKS, une consultancy d'élite en AI Engineering et Data Science basée à Douala, Cameroun.
+const SYSTEM_PROMPT = `Tu es l'assistant virtuel de SAAH MATHWORKS, une consultancy d'élite en AI Engineering, Data Science et développement logiciel basée à Douala, Cameroun.
 
 Ton rôle est d'aider les visiteurs à comprendre nos services et à évaluer si nous pouvons répondre à leurs besoins.
 
@@ -10,7 +10,9 @@ Ton rôle est d'aider les visiteurs à comprendre nos services et à évaluer si
 2. **RAG & Knowledge Systems** : Architectures RAG avancées, semantic search, Claude AI. Permettre aux LLMs d'accéder à la connaissance interne d'une entreprise.
 3. **Computer Vision** : Détection d'objets (YOLOv9), segmentation sémantique, vision industrielle temps réel (< 50ms).
 4. **Time Series & Predictive Analytics** : Forecasting haute performance, anomaly detection, modèles quantitatifs.
-5. **LLMs & Modern AI Stack** : Intégration Claude, Grok, Llama 3, fine-tuning, déploiement on-premise.
+5. **LLMs & Modern AI Stack** : Intégration Claude, Llama 3, fine-tuning, déploiement on-premise.
+6. **Développement Web & SaaS** : Applications Django (backend robuste, APIs REST), SaaS complets Next.js + FastAPI (architecture moderne, scalable, production-ready).
+7. **Connectivité Starlink au Cameroun** : Installation et configuration professionnelle d'antennes Starlink sur toute l'étendue du Cameroun — 450 000 FCFA tout frais compris (matériel, déplacement, installation, configuration réseau).
 
 ## Réalisations clés :
 - SmartAsset AI : -40% coûts maintenance, 95% précision prédiction pannes
@@ -27,9 +29,12 @@ Ton rôle est d'aider les visiteurs à comprendre nos services et à évaluer si
 - Réponds toujours en français sauf si le visiteur écrit dans une autre langue
 - Sois concis, professionnel et chaleureux
 - Si une question dépasse tes connaissances sur SAAH MATHWORKS, invite à contacter directement via /contact
-- Ne fabrique jamais de prix ou de délais — dis que ça dépend du projet et invite à consulter
+- Ne fabrique jamais de prix ou de délais (sauf pour Starlink : 450 000 FCFA tout frais compris) — pour les autres projets, dis que ça dépend du scope et invite à consulter
 - Maximum 3 paragraphes par réponse pour rester lisible dans le chat
 - Tu peux utiliser des emojis avec modération`;
+
+const client = new Anthropic();
+// Anthropic() lit automatiquement process.env.ANTHROPIC_API_KEY
 
 export async function POST(req: NextRequest) {
   try {
@@ -42,39 +47,39 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const apiKey = process.env.XAI_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: "Clé API manquante" }, { status: 500 });
-    }
+    // Séparer le premier message "assistant" d'accueil du reste
+    // car Claude API n'accepte pas de commencer par un message assistant
+    const userAndAssistantMessages = messages.filter(
+      (m: { role: string }) => m.role === "user" || m.role === "assistant"
+    );
 
-    // Appel à l'API xAI (compatible OpenAI SDK)
-    const response = await fetch("https://api.x.ai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "grok-3-mini", // modèle gratuit xAI
-        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
-        max_tokens: 500,
-        temperature: 0.7,
-      }),
-    });
+    // S'assurer que la conversation commence par un message user
+    const firstUserIndex = userAndAssistantMessages.findIndex(
+      (m: { role: string }) => m.role === "user"
+    );
+    const cleanMessages =
+      firstUserIndex >= 0
+        ? userAndAssistantMessages.slice(firstUserIndex)
+        : userAndAssistantMessages;
 
-    if (!response.ok) {
-      const err = await response.text();
-      console.error("xAI API error:", err);
+    if (cleanMessages.length === 0) {
       return NextResponse.json(
-        { error: "Erreur API xAI" },
-        { status: response.status }
+        { error: "Aucun message utilisateur trouvé" },
+        { status: 400 }
       );
     }
 
-    const data = await response.json();
+    const response = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 500,
+      system: SYSTEM_PROMPT,
+      messages: cleanMessages,
+    });
+
     const content =
-      data.choices?.[0]?.message?.content ??
-      "Désolé, je n'ai pas pu générer une réponse.";
+      response.content[0]?.type === "text"
+        ? response.content[0].text
+        : "Désolé, je n'ai pas pu générer une réponse.";
 
     return NextResponse.json({ content });
   } catch (error) {

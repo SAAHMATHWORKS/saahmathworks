@@ -211,7 +211,7 @@ export default function ChatWidget() {
                     Assistant SAAH MATHWORKS
                   </p>
                   <p className="text-xs text-[#00FF9F]">
-                    Powered by Grok · En ligne
+                    Powered by Claude · En ligne
                   </p>
                 </div>
               </div>
