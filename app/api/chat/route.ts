@@ -1,0 +1,87 @@
+import { NextRequest, NextResponse } from "next/server";
+
+// Système prompt : contextualise Grok sur SAAH MATHWORKS
+const SYSTEM_PROMPT = `Tu es l'assistant virtuel de SAAH MATHWORKS, une consultancy d'élite en AI Engineering et Data Science basée à Douala, Cameroun.
+
+Ton rôle est d'aider les visiteurs à comprendre nos services et à évaluer si nous pouvons répondre à leurs besoins.
+
+## Nos services :
+1. **Agentic AI & Orchestration** : Systèmes multi-agents autonomes avec LangGraph, CrewAI. Automatisation de workflows cognitifs complexes.
+2. **RAG & Knowledge Systems** : Architectures RAG avancées, semantic search, Claude AI. Permettre aux LLMs d'accéder à la connaissance interne d'une entreprise.
+3. **Computer Vision** : Détection d'objets (YOLOv9), segmentation sémantique, vision industrielle temps réel (< 50ms).
+4. **Time Series & Predictive Analytics** : Forecasting haute performance, anomaly detection, modèles quantitatifs.
+5. **LLMs & Modern AI Stack** : Intégration Claude, Grok, Llama 3, fine-tuning, déploiement on-premise.
+
+## Réalisations clés :
+- SmartAsset AI : -40% coûts maintenance, 95% précision prédiction pannes
+- Agentic Logistics Platform : -35% coûts logistiques, 3000+ décisions auto/heure
+- Vision Industrielle QC : 99.2% précision, < 30ms latence
+- Enterprise Document Intelligence : +400% vitesse recherche, 4.8/5 satisfaction
+
+## Contact :
+- Email : saahthibaut@gmail.com ou saahmathworks@gmail.com ou contact@saahmathworks.com
+- Téléphone : +237 6 96 69 75 51 ou +237 6 77 22 11 75
+- Localisation : Douala, Cameroun
+
+## Règles de comportement :
+- Réponds toujours en français sauf si le visiteur écrit dans une autre langue
+- Sois concis, professionnel et chaleureux
+- Si une question dépasse tes connaissances sur SAAH MATHWORKS, invite à contacter directement via /contact
+- Ne fabrique jamais de prix ou de délais — dis que ça dépend du projet et invite à consulter
+- Maximum 3 paragraphes par réponse pour rester lisible dans le chat
+- Tu peux utiliser des emojis avec modération`;
+
+export async function POST(req: NextRequest) {
+  try {
+    const { messages } = await req.json();
+
+    if (!messages || !Array.isArray(messages)) {
+      return NextResponse.json(
+        { error: "Messages invalides" },
+        { status: 400 }
+      );
+    }
+
+    const apiKey = process.env.XAI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: "Clé API manquante" }, { status: 500 });
+    }
+
+    // Appel à l'API xAI (compatible OpenAI SDK)
+    const response = await fetch("https://api.x.ai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "grok-3-mini", // modèle gratuit xAI
+        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
+        max_tokens: 500,
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      const err = await response.text();
+      console.error("xAI API error:", err);
+      return NextResponse.json(
+        { error: "Erreur API xAI" },
+        { status: response.status }
+      );
+    }
+
+    const data = await response.json();
+    const content =
+      data.choices?.[0]?.message?.content ??
+      "Désolé, je n'ai pas pu générer une réponse.";
+
+    return NextResponse.json({ content });
+  } catch (error) {
+    console.error("Chat route error:", error);
+    return NextResponse.json(
+      { error: "Erreur serveur interne" },
+      { status: 500 }
+    );
+  }
+}
