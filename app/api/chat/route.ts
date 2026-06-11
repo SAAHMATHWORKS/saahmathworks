@@ -12,7 +12,6 @@ Ton rôle est d'aider les visiteurs à comprendre nos services et à évaluer si
 4. **Time Series & Predictive Analytics** : Forecasting haute performance, anomaly detection, modèles quantitatifs.
 5. **LLMs & Modern AI Stack** : Intégration Claude, Llama 3, fine-tuning, déploiement on-premise.
 6. **Développement Web & SaaS** : Applications Django (backend robuste, APIs REST), SaaS complets Next.js + FastAPI (architecture moderne, scalable, production-ready).
-7. **Connectivité Starlink au Cameroun** : Installation et configuration professionnelle d'antennes Starlink sur toute l'étendue du Cameroun — 450 000 FCFA tout frais compris (matériel, déplacement, installation, configuration réseau).
 
 ## Réalisations clés :
 - SmartAsset AI : -40% coûts maintenance, 95% précision prédiction pannes
