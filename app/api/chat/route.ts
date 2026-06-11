@@ -33,11 +33,15 @@ Ton rôle est d'aider les visiteurs à comprendre nos services et à évaluer si
 - Maximum 3 paragraphes par réponse pour rester lisible dans le chat
 - Tu peux utiliser des emojis avec modération`;
 
-const client = new Anthropic();
-// Anthropic() lit automatiquement process.env.ANTHROPIC_API_KEY
-
 export async function POST(req: NextRequest) {
   try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      console.error("ANTHROPIC_API_KEY is not set");
+      return NextResponse.json({ error: "Clé API manquante" }, { status: 500 });
+    }
+
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
     const { messages } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
@@ -47,16 +51,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Séparer le premier message "assistant" d'accueil du reste
-    // car Claude API n'accepte pas de commencer par un message assistant
+    // Claude API n'accepte pas de commencer par un message assistant
     const userAndAssistantMessages = messages.filter(
       (m: { role: string }) => m.role === "user" || m.role === "assistant"
     );
 
-    // S'assurer que la conversation commence par un message user
     const firstUserIndex = userAndAssistantMessages.findIndex(
       (m: { role: string }) => m.role === "user"
     );
+
     const cleanMessages =
       firstUserIndex >= 0
         ? userAndAssistantMessages.slice(firstUserIndex)
